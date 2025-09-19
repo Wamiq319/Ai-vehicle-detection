@@ -1,0 +1,67 @@
+# Cauliflower AI – Setup & Credentials
+
+## Tailwind CSS Build
+Run this command from the tailwind_build directory:
+> npx tailwindcss -i input.css -o ../apps/ui/static/css/styles.css
+
+## Python Virtual Environment
+Activate the virtual environment:
+
+> source venv/bin/activate    # Linux/Mac
+
+# For Windows:
+> venv\Scripts\activate
+
+## Install Dependencies
+> pip install -r requirements.txt
+
+## Run Django Server
+> python manage.py runserver
+
+## Migrations
+Run migrations to set up the database:
+python manage.py makemigrations accounts admin_panel doctors farmers
+> python manage.py migrate
+
+
+
+
+
+---
+
+## Sample Accounts
+
+### SUPERUSER
+Username: wamiq  
+Email: wamiq@email.com  
+Password: adminpass
+
+### Farmer
+Username: ali_h  
+Password: farmer123  
+
+### Doctor
+Username: ahmed_r
+Password: doctor123  
+
+### Admin
+Username: admin01  
+Password: adminpass01
+
+
+### Create a simple admin user
+python manage.py shell
+from apps.accounts.models import CustomUser
+
+admin_user = CustomUser.objects.create(
+    username='admin01',
+    email='admin01@example.com',
+    role='admin',
+    plain_password='adminpass01'
+)
+
+# Set password properly
+admin_user.set_password('adminpass01')
+admin_user.save()
+
+print(f"Admin user created: {admin_user.username} with role {admin_user.role} and password {admin_user.password}")

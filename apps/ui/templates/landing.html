@@ -1,0 +1,237 @@
+{% extends "base.html" %} {% load static %} {% block title %}Welcome - AI
+Vehicle Toll Detection{% endblock %} {% block content %}
+
+<!-- 🚗 Hero Section -->
+<section class="relative text-center py-20 px-4 bg-blue-50 overflow-hidden">
+  <div
+    class="max-w-6xl mx-auto flex flex-col-reverse md:flex-row items-center justify-between gap-10"
+  >
+    <!-- Left: Text -->
+    <div class="md:w-1/2 text-left">
+      <h1
+        class="text-4xl md:text-5xl font-extrabold text-blue-800 leading-tight mb-4"
+      >
+        AI-Powered Vehicle Detection & Toll Tax System
+      </h1>
+      <p class="text-lg text-gray-700 mb-6">
+        Automating toll collection through AI-driven vehicle detection and
+        license plate recognition. Reduce delays, eliminate fraud, and improve
+        traffic flow.
+      </p>
+      <a
+        href="/admin"
+        class="px-6 py-3 rounded-full bg-blue-700 text-white hover:bg-blue-800 transition font-semibold shadow"
+      >
+        Go to Admin Dashboard
+      </a>
+    </div>
+
+    <!-- Right: Image -->
+    <div class="md:w-1/2 flex justify-center">
+      <div class="relative">
+        <img
+          src="{% static 'image/Logo.png' %}"
+          alt="System Logo"
+          class="w-72 md:w-96 object-contain mx-auto drop-shadow-xl"
+        />
+        <span
+          class="absolute bottom-0 right-0 bg-blue-100 text-blue-700 text-sm px-3 py-1 rounded-tl-lg font-medium"
+        >
+          AI Powered
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ⚙️ How It Works -->
+<section class="py-20 px-4 max-w-6xl mx-auto text-center">
+  <h2 class="text-3xl font-bold text-blue-800 mb-12">How It Works</h2>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+    <div
+      class="bg-white rounded-2xl shadow-lg p-8 hover:-translate-y-2 hover:shadow-2xl transition"
+    >
+      <span
+        class="w-16 h-16 flex items-center justify-center rounded-full bg-blue-100 text-blue-700 text-3xl mb-4 shadow"
+        >📷</span
+      >
+      <h3 class="font-semibold text-xl mb-2">Capture</h3>
+      <p class="text-gray-600">
+        Cameras capture vehicle images and video streams at toll gates.
+      </p>
+    </div>
+    <div
+      class="bg-white rounded-2xl shadow-lg p-8 hover:-translate-y-2 hover:shadow-2xl transition"
+    >
+      <span
+        class="w-16 h-16 flex items-center justify-center rounded-full bg-blue-100 text-blue-700 text-3xl mb-4 shadow"
+        >🤖</span
+      >
+      <h3 class="font-semibold text-xl mb-2">Detect</h3>
+      <p class="text-gray-600">
+        AI identifies vehicle type and extracts license plate details.
+      </p>
+    </div>
+    <div
+      class="bg-white rounded-2xl shadow-lg p-8 hover:-translate-y-2 hover:shadow-2xl transition"
+    >
+      <span
+        class="w-16 h-16 flex items-center justify-center rounded-full bg-blue-100 text-blue-700 text-3xl mb-4 shadow"
+        >💰</span
+      >
+      <h3 class="font-semibold text-xl mb-2">Charge</h3>
+      <p class="text-gray-600">
+        The system calculates and records toll charges automatically.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- 🚀 Features -->
+<section
+  class="py-20 px-4 max-w-6xl mx-auto text-center bg-gradient-to-br from-blue-50 via-white to-blue-100 rounded-3xl shadow-inner"
+>
+  <h2 class="text-3xl font-bold text-blue-800 mb-4">Key Features</h2>
+  <p class="text-blue-700 mb-12 text-lg">
+    Smart features built for accuracy, speed, and reliability.
+  </p>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+    <div
+      class="bg-white rounded-2xl shadow-lg p-10 flex flex-col items-center hover:-translate-y-2 hover:shadow-2xl transition"
+    >
+      <span
+        class="w-20 h-20 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 text-4xl mb-6 shadow"
+        >📸</span
+      >
+      <h3 class="font-semibold text-lg mb-2">License Plate Recognition</h3>
+      <p class="text-gray-600 text-sm">
+        Reads plates instantly with AI-based OCR models.
+      </p>
+    </div>
+    <div
+      class="bg-white rounded-2xl shadow-lg p-10 flex flex-col items-center hover:-translate-y-2 hover:shadow-2xl transition"
+    >
+      <span
+        class="w-20 h-20 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 text-4xl mb-6 shadow"
+        >⚡</span
+      >
+      <h3 class="font-semibold text-lg mb-2">Real-Time Detection</h3>
+      <p class="text-gray-600 text-sm">
+        Processes vehicles as they arrive, reducing waiting times.
+      </p>
+    </div>
+    <div
+      class="bg-white rounded-2xl shadow-lg p-10 flex flex-col items-center hover:-translate-y-2 hover:shadow-2xl transition"
+    >
+      <span
+        class="w-20 h-20 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 text-4xl mb-6 shadow"
+        >📊</span
+      >
+      <h3 class="font-semibold text-lg mb-2">Admin Dashboard</h3>
+      <p class="text-gray-600 text-sm">
+        View reports, transactions, and traffic analytics in one place.
+      </p>
+    </div>
+    <div
+      class="bg-white rounded-2xl shadow-lg p-10 flex flex-col items-center hover:-translate-y-2 hover:shadow-2xl transition"
+    >
+      <span
+        class="w-20 h-20 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 text-4xl mb-6 shadow"
+        >🔒</span
+      >
+      <h3 class="font-semibold text-lg mb-2">Secure & Scalable</h3>
+      <p class="text-gray-600 text-sm">
+        System designed for high-traffic toll plazas with safety in mind.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- 🚦 Supported Vehicle Types -->
+<section class="py-20 px-4 max-w-6xl mx-auto text-center">
+  <h2 class="text-3xl font-bold text-blue-800 mb-4">Supported Vehicle Types</h2>
+  <p class="text-blue-700 mb-10 text-lg">
+    The system supports automatic detection and tolling for multiple vehicle
+    classes.
+  </p>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+    <div
+      class="bg-white shadow-md rounded-2xl p-6 flex flex-col items-center hover:shadow-xl transition"
+    >
+      🚗
+      <p class="mt-3 font-medium">Cars</p>
+    </div>
+    <div
+      class="bg-white shadow-md rounded-2xl p-6 flex flex-col items-center hover:shadow-xl transition"
+    >
+      🚛
+      <p class="mt-3 font-medium">Trucks</p>
+    </div>
+    <div
+      class="bg-white shadow-md rounded-2xl p-6 flex flex-col items-center hover:shadow-xl transition"
+    >
+      🚌
+      <p class="mt-3 font-medium">Buses</p>
+    </div>
+    <div
+      class="bg-white shadow-md rounded-2xl p-6 flex flex-col items-center hover:shadow-xl transition"
+    >
+      🏍
+      <p class="mt-3 font-medium">Motorbikes</p>
+    </div>
+    <div
+      class="bg-white shadow-md rounded-2xl p-6 flex flex-col items-center hover:shadow-xl transition"
+    >
+      🚑
+      <p class="mt-3 font-medium">Emergency Vehicles</p>
+    </div>
+  </div>
+</section>
+
+<!-- 🌟 Benefits Section -->
+<section class="py-20 px-4 max-w-6xl mx-auto text-center">
+  <h2 class="text-3xl font-bold text-blue-800 mb-4">Benefits</h2>
+  <p class="text-blue-700 mb-12 text-lg">
+    Why our AI-powered toll system is the smarter choice.
+  </p>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+    <div
+      class="bg-white rounded-2xl shadow-lg p-8 hover:-translate-y-2 hover:shadow-2xl transition"
+    >
+      🚀
+      <h3 class="font-semibold text-lg mb-2">Fast Transactions</h3>
+      <p class="text-gray-600 text-sm">
+        Reduces waiting time at toll booths with automated collection.
+      </p>
+    </div>
+    <div
+      class="bg-white rounded-2xl shadow-lg p-8 hover:-translate-y-2 hover:shadow-2xl transition"
+    >
+      💸
+      <h3 class="font-semibold text-lg mb-2">Revenue Accuracy</h3>
+      <p class="text-gray-600 text-sm">
+        Ensures correct tolls are charged without human error.
+      </p>
+    </div>
+    <div
+      class="bg-white rounded-2xl shadow-lg p-8 hover:-translate-y-2 hover:shadow-2xl transition"
+    >
+      🔍
+      <h3 class="font-semibold text-lg mb-2">Fraud Prevention</h3>
+      <p class="text-gray-600 text-sm">
+        Prevents toll evasion using license plate verification.
+      </p>
+    </div>
+    <div
+      class="bg-white rounded-2xl shadow-lg p-8 hover:-translate-y-2 hover:shadow-2xl transition"
+    >
+      🌍
+      <h3 class="font-semibold text-lg mb-2">Traffic Optimization</h3>
+      <p class="text-gray-600 text-sm">
+        Improves traffic flow and reduces congestion at toll plazas.
+      </p>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

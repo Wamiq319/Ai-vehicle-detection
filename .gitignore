@@ -1,0 +1,65 @@
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.log
+
+# Virtual env
+venv/
+.env
+.env.*
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Django
+*.sqlite3
+*.log
+media/
+staticfiles/
+migrations/__pycache__/
+migrations/*.py[cod]
+.env
+.env.*
+
+# Virtual environment
+venv/
+
+# Tailwind / Node / NPM
+node_modules/
+tailwind_build/node_modules/
+tailwind_build/package-lock.json
+apps/ui/static/css/styles.css
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VSCode
+.vscode/
+
+# PyCharm
+.idea/
+
+# Django stuff
+*.pyc
+db.sqlite3
+media/
+staticfiles/
+
+# Tailwind / Node / NPM
+node_modules/
+theme/static_src/
+theme/static/css/dist/
+theme/package-lock.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# VSCode
+.vscode/
+
+# PyCharm
+.idea/

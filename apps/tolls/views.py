@@ -5,9 +5,14 @@ from .models import TollRate
 def toll_rates_view(request):
     # Fetch all rates, create default if not exist
     vehicle_types = ['truck', 'car', 'bolan']
+    default_rates = {'truck': 150.00, 'car': 50.00, 'bolan': 75.00}
     rates = {}
+    
     for v in vehicle_types:
-        obj, created = TollRate.objects.get_or_create(vehicle_type=v)
+        obj, created = TollRate.objects.get_or_create(
+            vehicle_type=v, 
+            defaults={'rate': default_rates[v]}
+        )
         rates[v] = obj.rate
 
     if request.method == "POST":
@@ -22,4 +27,4 @@ def toll_rates_view(request):
             messages.error(request, f"Error updating rates: {str(e)}")
         return redirect('tolls:toll_rates')
 
-    return render(request, 'dashboard/admin/toll_rates.html', {'rates': rates})
+    return render(request, 'dashbaord/admin/toll_rates.html', {'rates': rates})

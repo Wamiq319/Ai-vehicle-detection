@@ -1,0 +1,140 @@
+{% extends "dashbaord/admin/base_admin.html" %} {% block content %}
+<div class="max-w-3xl mx-auto bg-white rounded-2xl shadow p-8">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-2xl font-bold text-blue-800 flex items-center gap-2">
+      <span>🚦</span> Toll Rates
+    </h2>
+    <button
+      id="edit-btn"
+      class="px-4 py-2 bg-blue-700 text-white rounded-lg shadow hover:bg-blue-800 transition"
+    >
+      ✏️ Edit
+    </button>
+  </div>
+
+  <!-- Rates Display Section -->
+  <div id="rates-display" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+    <!-- Truck -->
+    <div
+      class="bg-blue-50 rounded-lg p-6 border border-blue-200 flex flex-col items-center"
+    >
+      <span class="text-5xl mb-2">🚛</span>
+      <h3 class="text-lg font-bold text-blue-800 mb-2">Truck</h3>
+      <p class="text-2xl font-bold text-gray-900 rate-display">
+        ${{ rates.truck }}
+      </p>
+    </div>
+
+    <!-- Car -->
+    <div
+      class="bg-blue-50 rounded-lg p-6 border border-blue-200 flex flex-col items-center"
+    >
+      <span class="text-5xl mb-2">🚗</span>
+      <h3 class="text-lg font-bold text-blue-800 mb-2">Car</h3>
+      <p class="text-2xl font-bold text-gray-900 rate-display">
+        ${{ rates.car }}
+      </p>
+    </div>
+
+    <!-- Bolan -->
+    <div
+      class="bg-blue-50 rounded-lg p-6 border border-blue-200 flex flex-col items-center"
+    >
+      <span class="text-5xl mb-2">🚐</span>
+      <h3 class="text-lg font-bold text-blue-800 mb-2">Bolan</h3>
+      <p class="text-2xl font-bold text-gray-900 rate-display">
+        ${{ rates.bolan }}
+      </p>
+    </div>
+  </div>
+
+  <!-- Hidden Form for Editing -->
+  <form
+    method="POST"
+    id="rates-form"
+    action="{% url 'update_toll_rates' %}"
+    class="hidden"
+  >
+    {% csrf_token %}
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+      <!-- Truck -->
+      <div
+        class="bg-blue-50 rounded-lg p-6 border border-blue-200 flex flex-col items-center"
+      >
+        <span class="text-5xl mb-2">🚛</span>
+        <h3 class="text-lg font-bold text-blue-800 mb-2">Truck</h3>
+        <input
+          type="number"
+          name="truck_rate"
+          value="{{ rates.truck }}"
+          class="text-center text-2xl font-bold text-gray-900 border rounded-xl p-2 w-32 editable-input"
+        />
+      </div>
+
+      <!-- Car -->
+      <div
+        class="bg-blue-50 rounded-lg p-6 border border-blue-200 flex flex-col items-center"
+      >
+        <span class="text-5xl mb-2">🚗</span>
+        <h3 class="text-lg font-bold text-blue-800 mb-2">Car</h3>
+        <input
+          type="number"
+          name="car_rate"
+          value="{{ rates.car }}"
+          class="text-center text-2xl font-bold text-gray-900 border rounded-xl p-2 w-32 editable-input"
+        />
+      </div>
+
+      <!-- Bolan -->
+      <div
+        class="bg-blue-50 rounded-lg p-6 border border-blue-200 flex flex-col items-center"
+      >
+        <span class="text-5xl mb-2">🚐</span>
+        <h3 class="text-lg font-bold text-blue-800 mb-2">Bolan</h3>
+        <input
+          type="number"
+          name="bolan_rate"
+          value="{{ rates.bolan }}"
+          class="text-center text-2xl font-bold text-gray-900 border rounded-xl p-2 w-32 editable-input"
+        />
+      </div>
+    </div>
+
+    <!-- Save/Cancel Buttons -->
+    <div class="flex justify-end gap-4">
+      <button
+        type="submit"
+        class="px-6 py-3 bg-blue-700 text-white rounded-lg hover:bg-blue-800 transition"
+      >
+        💾 Save Changes
+      </button>
+      <button
+        type="button"
+        id="cancel-btn"
+        class="px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
+      >
+        ❌ Cancel
+      </button>
+    </div>
+  </form>
+</div>
+
+<script>
+  const editBtn = document.getElementById("edit-btn");
+  const cancelBtn = document.getElementById("cancel-btn");
+  const ratesDisplay = document.getElementById("rates-display");
+  const ratesForm = document.getElementById("rates-form");
+
+  editBtn.addEventListener("click", () => {
+    ratesDisplay.classList.add("hidden");
+    ratesForm.classList.remove("hidden");
+    editBtn.classList.add("hidden");
+  });
+
+  cancelBtn.addEventListener("click", () => {
+    ratesDisplay.classList.remove("hidden");
+    ratesForm.classList.add("hidden");
+    editBtn.classList.remove("hidden");
+  });
+</script>
+{% endblock %}

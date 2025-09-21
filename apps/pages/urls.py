@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import (
     landing_page,
-    login_page,
+    dashboard_view,
    
 )
 
@@ -9,7 +9,9 @@ from .views import (
 
 
 urlpatterns = [
-    # Landing & Authentication
+    # Landing
     path('', landing_page, name='landing'),
-    path('login/', login_page, name='login'),
+    
+    # Dashboard
+    path('dashboard/', dashboard_view, name='dashboard'),
 ]

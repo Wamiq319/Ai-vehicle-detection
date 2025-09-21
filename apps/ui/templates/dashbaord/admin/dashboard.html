@@ -1,0 +1,171 @@
+{% extends "dashbaord/admin/base_admin.html" %} {% block content %}
+
+<!-- Welcome Header -->
+<div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+  <div class="flex items-center gap-4">
+    <div
+      class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center"
+    >
+      <span class="text-3xl">🚦</span>
+    </div>
+    <div>
+      <h1 class="text-3xl font-bold text-gray-800">
+        Welcome, {{ user.first_name|default:"Admin" }}!
+      </h1>
+      <p class="text-gray-600 mt-1">
+        AI Vehicle Toll Detection System Dashboard
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- Key Statistics -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+  <div
+    class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow"
+  >
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm font-medium text-gray-600">Total Vehicles</p>
+        <p class="text-2xl font-bold text-gray-900">
+          {{ stats.total_vehicles_today }}
+        </p>
+      </div>
+      <div
+        class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center"
+      >
+        <span class="text-2xl">🚗</span>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow"
+  >
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm font-medium text-gray-600">Revenue Today</p>
+        <p class="text-2xl font-bold text-gray-900">
+          ${{ stats.total_revenue_today|floatformat:0 }}
+        </p>
+      </div>
+      <div
+        class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center"
+      >
+        <span class="text-2xl">💰</span>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow"
+  >
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm font-medium text-gray-600">Active Points</p>
+        <p class="text-2xl font-bold text-gray-900">
+          {{ stats.active_toll_points }}
+        </p>
+      </div>
+      <div
+        class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center"
+      >
+        <span class="text-2xl">🚦</span>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow"
+  >
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm font-medium text-gray-600">Accuracy</p>
+        <p class="text-2xl font-bold text-gray-900">
+          {{ stats.detection_accuracy }}%
+        </p>
+      </div>
+      <div
+        class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center"
+      >
+        <span class="text-2xl">🎯</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="bg-white rounded-2xl shadow-lg p-6">
+  <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+    <span>⚡</span> Quick Actions
+  </h2>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <a
+      href="#"
+      class="flex items-center gap-4 p-4 bg-gray-50 rounded-xl hover:bg-blue-50 hover:border-blue-200 border border-transparent transition-all"
+    >
+      <div
+        class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center"
+      >
+        <span class="text-2xl">📊</span>
+      </div>
+      <div>
+        <div class="font-semibold text-gray-800">View Vehicle Logs</div>
+        <div class="text-sm text-gray-600">
+          Check vehicle counts and toll collection
+        </div>
+      </div>
+    </a>
+
+    <a
+      href="#"
+      class="flex items-center gap-4 p-4 bg-gray-50 rounded-xl hover:bg-green-50 hover:border-green-200 border border-transparent transition-all"
+    >
+      <div
+        class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center"
+      >
+        <span class="text-2xl">💰</span>
+      </div>
+      <div>
+        <div class="font-semibold text-gray-800">Manage Toll Rates</div>
+        <div class="text-sm text-gray-600">
+          Update toll for different vehicle types
+        </div>
+      </div>
+    </a>
+
+    <a
+      href="#"
+      class="flex items-center gap-4 p-4 bg-gray-50 rounded-xl hover:bg-purple-50 hover:border-purple-200 border border-transparent transition-all"
+    >
+      <div
+        class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center"
+      >
+        <span class="text-2xl">🚦</span>
+      </div>
+      <div>
+        <div class="font-semibold text-gray-800">Live Traffic Dashboard</div>
+        <div class="text-sm text-gray-600">
+          Monitor real-time vehicle counts
+        </div>
+      </div>
+    </a>
+
+    <a
+      href="{% url 'accounts:profile' %}"
+      class="flex items-center gap-4 p-4 bg-gray-50 rounded-xl hover:bg-orange-50 hover:border-orange-200 border border-transparent transition-all"
+    >
+      <div
+        class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center"
+      >
+        <span class="text-2xl">👤</span>
+      </div>
+      <div>
+        <div class="font-semibold text-gray-800">Update Profile</div>
+        <div class="text-sm text-gray-600">Manage your information</div>
+      </div>
+    </a>
+  </div>
+</div>
+
+{% endblock %}

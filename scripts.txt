@@ -20,7 +20,7 @@ Activate the virtual environment:
 
 ## Migrations
 Run migrations to set up the database:
-python manage.py makemigrations accounts admin_panel doctors farmers
+python manage.py makemigrations accounts
 > python manage.py migrate
 
 
@@ -31,18 +31,7 @@ python manage.py makemigrations accounts admin_panel doctors farmers
 
 ## Sample Accounts
 
-### SUPERUSER
-Username: wamiq  
-Email: wamiq@email.com  
-Password: adminpass
 
-### Farmer
-Username: ali_h  
-Password: farmer123  
-
-### Doctor
-Username: ahmed_r
-Password: doctor123  
 
 ### Admin
 Username: admin01  

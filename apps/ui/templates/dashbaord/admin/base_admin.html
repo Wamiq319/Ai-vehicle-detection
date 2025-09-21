@@ -1,0 +1,135 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}AI Toll Admin{% endblock %}</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .sidebar-transition {
+        transition: all 0.3s ease-in-out;
+      }
+      .hover-lift:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
+    </style>
+  </head>
+  <body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+    <div class="min-h-screen flex">
+      <!-- Sidebar -->
+      <aside
+        class="w-64 bg-gradient-to-b from-gray-900 to-gray-800 text-white flex flex-col justify-between sidebar-transition shadow-2xl"
+      >
+        <div>
+          <!-- Logo + Title -->
+          <div class="flex flex-col items-center py-8 border-b border-gray-700">
+            <div class="relative">
+              <img
+                src="{% static 'image/Logo.png' %}"
+                alt="Logo"
+                class="w-16 h-16 mb-3 rounded-full shadow-lg"
+              />
+              <div
+                class="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white"
+              ></div>
+            </div>
+            <span class="text-xl font-bold text-white">AI Toll System</span>
+            <span class="text-sm text-gray-400 mt-1">Admin Dashboard</span>
+          </div>
+
+          <!-- Navigation -->
+          <nav class="mt-8 flex flex-col space-y-1 px-4">
+            <a
+              href="{% url 'dashboard' %}"
+              class="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-blue-600 transition-all duration-200 group"
+            >
+              <i
+                class="fas fa-chart-line text-lg group-hover:scale-110 transition-transform"
+              ></i>
+              <span class="font-medium">Dashboard</span>
+            </a>
+
+            <a
+              href="#"
+              class="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-gray-700 transition-all duration-200 group"
+            >
+              <i
+                class="fas fa-dollar-sign text-lg group-hover:scale-110 transition-transform"
+              ></i>
+              <span class="font-medium">Toll Rates</span>
+            </a>
+            <a
+              href="#"
+              class="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-gray-700 transition-all duration-200 group"
+            >
+              <i
+                class="fas fa-file-alt text-lg group-hover:scale-110 transition-transform"
+              ></i>
+              <span class="font-medium">Reports</span>
+            </a>
+            <a
+              href="#"
+              class="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-gray-700 transition-all duration-200 group"
+            >
+              <i
+                class="fas fa-cogs text-lg group-hover:scale-110 transition-transform"
+              ></i>
+              <span class="font-medium">System Monitoring</span>
+            </a>
+            <a
+              href="{% url 'accounts:profile' %}"
+              class="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-gray-700 transition-all duration-200 group"
+            >
+              <i
+                class="fas fa-user text-lg group-hover:scale-110 transition-transform"
+              ></i>
+              <span class="font-medium">Profile</span>
+            </a>
+          </nav>
+        </div>
+
+        <!-- User Info & Logout -->
+        <div class="p-4 border-t border-gray-700">
+          <div class="flex items-center gap-3 mb-4 p-3 bg-gray-800 rounded-lg">
+            <div
+              class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center"
+            >
+              <i class="fas fa-user text-white"></i>
+            </div>
+            <div>
+              <p class="font-medium text-white">
+                {{ user.first_name|default:user.username }}
+              </p>
+              <p class="text-xs text-gray-400">Administrator</p>
+            </div>
+          </div>
+          <a
+            href="{% url 'accounts:logout' %}"
+            class="flex items-center justify-center gap-3 px-4 py-3 rounded-xl bg-red-600 hover:bg-red-700 transition-all duration-200 group"
+          >
+            <i
+              class="fas fa-sign-out-alt group-hover:scale-110 transition-transform"
+            ></i>
+            <span class="font-medium">Logout</span>
+          </a>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="flex-1 p-8 overflow-y-auto">
+        {% block content %}
+        <!-- Page-specific content goes here -->
+        {% endblock %}
+      </main>
+    </div>
+  </body>
+</html>

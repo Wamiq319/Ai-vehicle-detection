@@ -11,8 +11,11 @@ urlpatterns = [
 
     # Public pages (landing, login, etc.)
     path('', include('apps.pages.urls')),
+    
+    # Accounts (authentication)
+    path('accounts/', include('apps.accounts.urls', namespace='accounts')),
+    path('tolls/',include('apps.tolls.urls',namespace='tolls'))
 
-  
 ]
 
 # Serve media files in development

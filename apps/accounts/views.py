@@ -1,6 +1,7 @@
 # accounts/views.py
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import CustomUser, OperatorProfile
@@ -33,25 +34,44 @@ def profile_view(request):
     user = request.user
     if request.method == "POST":
         # Update basic info
-        user.first_name = request.POST.get("first_name")
-        user.last_name = request.POST.get("last_name")
-        user.email = request.POST.get("email")
+        user.first_name = request.POST.get("first_name", user.first_name)
+        user.last_name = request.POST.get("last_name", user.last_name)
+        user.email = request.POST.get("email", user.email)
+
+        # Handle password change if provided
+        new_password = request.POST.get("new_password", "").strip()
+        confirm_password = request.POST.get("confirm_password", "").strip()
+        if new_password or confirm_password:
+            if new_password != confirm_password:
+                messages.error(request, "New password and confirmation do not match")
+                return redirect('accounts:profile')
+            if len(new_password) < 8:
+                messages.error(request, "Password must be at least 8 characters long")
+                return redirect('accounts:profile')
+            user.set_password(new_password)
+            # Do not store plain passwords
+
         user.save()
 
-        # If operator, update operator profile
+        # If operator, update or create operator profile
         if user.role == 'operator':
             profile = getattr(user, 'operator_profile', None)
-            if profile:
-                profile.assigned_toll_point = request.POST.get("assigned_toll_point")
-                profile.contact_number = request.POST.get("contact_number")
-                profile.save()
+            if profile is None:
+                profile = OperatorProfile.objects.create(user=user)
+            profile.assigned_toll_point = request.POST.get("assigned_toll_point", profile.assigned_toll_point)
+            profile.contact_number = request.POST.get("contact_number", profile.contact_number)
+            profile.save()
+
+        # Keep session valid after password change
+        if new_password:
+            update_session_auth_hash(request, user)
 
         messages.success(request, "Profile updated successfully")
-        return redirect('profile')
+        return redirect('accounts:profile')
 
     context = {}
     if user.role == 'operator':
         context['profile'] = getattr(user, 'operator_profile', None)
 
     context['user'] = user
-    return render(request, "accounts/profile.html", context)
+    return render(request, "dashbaord/admin/profile.html", context)

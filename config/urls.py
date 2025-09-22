@@ -14,7 +14,13 @@ urlpatterns = [
     
     # Accounts (authentication)
     path('accounts/', include('apps.accounts.urls', namespace='accounts')),
-    path('tolls/',include('apps.tolls.urls',namespace='tolls'))
+    path('tolls/',include('apps.tolls.urls',namespace='tolls')),
+    
+    # Detections (video upload, AI webhook)
+    path('detections/', include('apps.detections.urls', namespace='detections')),
+
+    # Reports app
+    path('reports/', include('apps.reports.urls', namespace='reports'))
 
 ]
 

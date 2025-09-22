@@ -30,7 +30,9 @@ INSTALLED_APPS = [
    'apps.ui',
     'apps.pages',
     'apps.accounts',
-    'apps.tolls'
+    'apps.tolls',
+    'apps.detections'
+    ,'apps.reports'
 ]
 
 MIDDLEWARE = [

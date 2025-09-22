@@ -13,14 +13,13 @@ Activate the virtual environment:
 > venv\Scripts\activate
 
 ## Install Dependencies
-> pip install -r requirements.txt
 
 ## Run Django Server
 > python manage.py runserver
 
 ## Migrations
 Run migrations to set up the database:
-python manage.py makemigrations accounts
+python manage.py makemigrations accounts detections
 > python manage.py migrate
 
 
@@ -52,3 +51,4 @@ admin_user.set_password('adminpass01')
 admin_user.save()
 
 print(f"Admin user created: {admin_user.username} with role {admin_user.role} and password {admin_user.password}")
+> pip install -r requirements.txt

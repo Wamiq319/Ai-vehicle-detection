@@ -1,0 +1,86 @@
+{% extends "dashbaord/admin/base_admin.html" %}
+{% block content %}
+
+<div class="max-w-5xl mx-auto">
+  <div class="bg-white rounded-2xl shadow p-6 mb-6">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <h2 class="text-2xl font-bold text-blue-800">Reports</h2>
+      <form method="get" class="flex items-center gap-2">
+        <input type="hidden" name="mode" value="quick" />
+        <label class="text-sm text-gray-600">Quick</label>
+        <select name="period" class="border rounded-lg px-3 py-2">
+          <option value="day" {% if period == 'day' %}selected{% endif %}>Last 24 hours</option>
+          <option value="week" {% if period == 'week' %}selected{% endif %}>Last 7 days</option>
+          <option value="month" {% if period == 'month' %}selected{% endif %}>Last 30 days</option>
+        </select>
+        <button class="px-4 py-2 bg-blue-700 text-white rounded-lg">Apply</button>
+      </form>
+    </div>
+
+    <form method="get" class="grid grid-cols-1 md:grid-cols-5 gap-3 items-end mt-4">
+      <input type="hidden" name="mode" value="range" />
+      <div class="col-span-1 md:col-span-2">
+        <label class="block text-sm text-gray-600 mb-1">Start date</label>
+        <input type="date" name="start_date" value="{{ selected.start_date }}" class="w-full border rounded-lg px-3 py-2" />
+      </div>
+      <div class="col-span-1 md:col-span-2">
+        <label class="block text-sm text-gray-600 mb-1">End date</label>
+        <input type="date" name="end_date" value="{{ selected.end_date }}" class="w-full border rounded-lg px-3 py-2" />
+      </div>
+
+      <div class="col-span-1 md:col-span-5 flex justify-end">
+        <button class="px-4 py-2 bg-green-600 text-white rounded-lg">Apply Range</button>
+      </div>
+    </form>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+      <div class="bg-blue-50 rounded-lg p-6 border border-blue-200 text-center">
+        <div class="text-4xl mb-2">🚗</div>
+        <div class="text-sm text-blue-800">Total Vehicles</div>
+        <div class="text-2xl font-bold">{{ totals.vehicles }}</div>
+      </div>
+      <div class="bg-green-50 rounded-lg p-6 border border-green-200 text-center">
+        <div class="text-4xl mb-2">💰</div>
+        <div class="text-sm text-green-800">Total Revenue (RS)</div>
+        <div class="text-2xl font-bold">{{ totals.revenue }}</div>
+      </div>
+      <div class="bg-purple-50 rounded-lg p-6 border border-purple-200 text-center">
+        <div class="text-4xl mb-2">📅</div>
+        <div class="text-sm text-purple-800">Period</div>
+        <div class="text-lg font-semibold capitalize">{{ period }}</div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow p-6 mb-6 border">
+      <h3 class="text-lg font-bold text-gray-800 mb-4">Breakdown by Vehicle Type</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {% for row in by_type %}
+          <div class="rounded-lg p-4 border">
+            <div class="text-sm text-gray-600">{{ row.vehicle_type|capfirst }}</div>
+            <div class="text-xl font-bold">{{ row.count }} vehicles</div>
+            <div class="text-sm text-gray-700">Revenue: RS {{ row.revenue }}</div>
+          </div>
+        {% empty %}
+          <p class="text-gray-500">No data for this period.</p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow p-6 border">
+      <h3 class="text-lg font-bold text-gray-800 mb-4">Recent Detections</h3>
+      <div class="divide-y">
+        {% for d in detections %}
+          <div class="py-3 flex items-center justify-between">
+            <span class="capitalize">{{ d.vehicle_type }}</span>
+            <span class="text-gray-700">RS {{ d.toll_rate }}</span>
+            <span class="text-gray-500 text-sm">{{ d.detected_at }}</span>
+          </div>
+        {% empty %}
+          <p class="text-gray-500">No detections yet.</p>
+        {% endfor %}
+      </div>
+    </div>
+</div>
+</div>
+{% endblock %}
+

@@ -68,22 +68,22 @@
               <span class="font-medium">Toll Rates</span>
             </a>
             <a
-              href="#"
+              href="{% url 'detections:upload_video' %}"
+              class="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-gray-700 transition-all duration-200 group"
+            >
+              <i
+                class="fas fa-video text-lg group-hover:scale-110 transition-transform"
+              ></i>
+              <span class="font-medium">Vehicle Detection</span>
+            </a>
+            <a
+              href="{% url 'reports:reports' %}"
               class="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-gray-700 transition-all duration-200 group"
             >
               <i
                 class="fas fa-file-alt text-lg group-hover:scale-110 transition-transform"
               ></i>
               <span class="font-medium">Reports</span>
-            </a>
-            <a
-              href="#"
-              class="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-gray-700 transition-all duration-200 group"
-            >
-              <i
-                class="fas fa-cogs text-lg group-hover:scale-110 transition-transform"
-              ></i>
-              <span class="font-medium">System Monitoring</span>
             </a>
             <a
               href="{% url 'accounts:profile' %}"

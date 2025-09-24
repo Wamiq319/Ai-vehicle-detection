@@ -1,25 +1,49 @@
+# apps/reports/views.py
 from django.shortcuts import render
 from django.utils import timezone
+from django.utils.timezone import is_naive, make_aware
 from django.db.models import Sum, Count
+from django.db.models.functions import TruncDate, TruncHour
 from datetime import datetime
-
 from apps.detections.models import Detection
 
 
 def reports(request):
-    """Admin reports page with filters: quick (day/week/month), month/day, and custom range."""
-    mode = request.GET.get("mode", "quick")  # quick | month_day | range
-    period = request.GET.get("period", "day")  # used when mode=quick
+    """Advanced reports with trends, breakdowns, anomalies, and extra analytics."""
 
+    mode = request.GET.get("mode", "range")  # default: range
     now = timezone.now()
-    start = None
-    end = None
+    start, end = None, None
 
-    if mode == "month_day":
-        year_str = request.GET.get("year")
-        month_str = request.GET.get("month")  # 1-12
-        day_str = request.GET.get("day")      # 1-31 optional
+    # -------------------
+    # FILTERING
+    # -------------------
+    if mode == "range":
+        start_str, end_str = request.GET.get("start_date"), request.GET.get("end_date")
+        try:
+            start_dt = (
+                datetime.strptime(start_str, "%Y-%m-%d")
+                if start_str else now - timezone.timedelta(days=30)
+            )
+            end_dt = (
+                datetime.strptime(end_str, "%Y-%m-%d")
+                if end_str else now
+            )
+            end_dt = end_dt.replace(hour=23, minute=59, second=59)
+        except Exception:
+            start_dt = now - timezone.timedelta(days=30)
+            end_dt = now
 
+        # ✅ Safe timezone handling
+        start = make_aware(start_dt) if is_naive(start_dt) else start_dt
+        end = make_aware(end_dt) if is_naive(end_dt) else end_dt
+
+    elif mode == "month_day":
+        year_str, month_str, day_str = (
+            request.GET.get("year"),
+            request.GET.get("month"),
+            request.GET.get("day"),
+        )
         try:
             year = int(year_str) if year_str else now.year
             month = int(month_str) if month_str else now.month
@@ -28,95 +52,104 @@ def reports(request):
                 start_dt = datetime(year, month, day, 0, 0, 0)
                 end_dt = datetime(year, month, day, 23, 59, 59)
             else:
-                # whole month
                 start_dt = datetime(year, month, 1, 0, 0, 0)
                 if month == 12:
                     end_dt = datetime(year, 12, 31, 23, 59, 59)
                 else:
                     next_month = datetime(year, month + 1, 1)
-                    end_dt = (next_month - timezone.timedelta(seconds=1))
-        except ValueError:
-            # fallback to last 24h on invalid input
-            start_dt = (now - timezone.timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
-            end_dt = now
-
-        start = timezone.make_aware(start_dt) if timezone.is_naive(start_dt) else start_dt
-        end = timezone.make_aware(end_dt) if timezone.is_naive(end_dt) else end_dt
-
-    elif mode == "range":
-        # Expect YYYY-MM-DD for start_date and end_date
-        start_str = request.GET.get("start_date")
-        end_str = request.GET.get("end_date")
-        try:
-            if start_str:
-                s_parts = [int(p) for p in start_str.split("-")]
-                start_dt = datetime(s_parts[0], s_parts[1], s_parts[2], 0, 0, 0)
-            else:
-                start_dt = now - timezone.timedelta(days=30)
-            if end_str:
-                e_parts = [int(p) for p in end_str.split("-")]
-                end_dt = datetime(e_parts[0], e_parts[1], e_parts[2], 23, 59, 59)
-            else:
-                end_dt = now
+                    end_dt = next_month - timezone.timedelta(seconds=1)
         except Exception:
-            start_dt = now - timezone.timedelta(days=30)
+            start_dt = now - timezone.timedelta(days=1)
             end_dt = now
 
-        start = timezone.make_aware(start_dt) if timezone.is_naive(start_dt) else start_dt
-        end = timezone.make_aware(end_dt) if timezone.is_naive(end_dt) else end_dt
+        # ✅ Safe timezone handling
+        start = make_aware(start_dt) if is_naive(start_dt) else start_dt
+        end = make_aware(end_dt) if is_naive(end_dt) else end_dt
 
-    else:
-        # quick mode
-        if period == "week":
-            start = now - timezone.timedelta(days=7)
-        elif period == "month":
-            start = now - timezone.timedelta(days=30)
-        else:
-            period = "day"
-            start = now - timezone.timedelta(days=1)
+    else:  # fallback quick
+        start = now - timezone.timedelta(days=1)
         end = now
 
+    # -------------------
+    # QUERIES
+    # -------------------
     detections_qs = Detection.objects.filter(detected_at__gte=start, detected_at__lte=end)
 
     totals = detections_qs.aggregate(
         total_revenue=Sum("toll_rate"),
-        total_vehicles=Count("id"),
+        total_vehicles=Count("id")
     )
 
     by_type = list(
-        detections_qs.values("vehicle_type").annotate(
-            count=Count("id"),
-            revenue=Sum("toll_rate"),
-        ).order_by("vehicle_type")
+        detections_qs.values("vehicle_type")
+        .annotate(count=Count("id"), revenue=Sum("toll_rate"))
+        .order_by("vehicle_type")
     )
 
-    # years list for selector
-    try:
-        years = [d.year for d in Detection.objects.dates("detected_at", "year")]
-    except Exception:
-        years = list({d.detected_at.year for d in Detection.objects.all()})
-        years.sort()
+    by_day = list(
+        detections_qs.annotate(day=TruncDate("detected_at"))
+        .values("day")
+        .annotate(vehicles=Count("id"), revenue=Sum("toll_rate"))
+        .order_by("day")
+    )
+
+    by_hour = list(
+        detections_qs.annotate(hour=TruncHour("detected_at"))
+        .values("hour")
+        .annotate(vehicles=Count("id"))
+        .order_by("hour")
+    )
+
+    top_type = (
+        detections_qs.values("vehicle_type")
+        .annotate(count=Count("id"))
+        .order_by("-count")
+        .first()
+    )
+
+    busiest_day = (
+        detections_qs.annotate(day=TruncDate("detected_at"))
+        .values("day")
+        .annotate(vehicles=Count("id"))
+        .order_by("-vehicles")
+        .first()
+    )
+
+    busiest_hour = (
+        detections_qs.annotate(hour=TruncHour("detected_at"))
+        .values("hour")
+        .annotate(vehicles=Count("id"))
+        .order_by("-vehicles")
+        .first()
+    )
+
+    avg_revenue_per_vehicle = 0
+    if totals.get("total_vehicles"):
+        avg_revenue_per_vehicle = round(
+            (totals.get("total_revenue") or 0) / totals.get("total_vehicles"), 2
+        )
+
+    anomalies = list(detections_qs.filter(toll_rate__lte=0).values()[:50])
 
     context = {
-        "mode": mode,
-        "period": period,
         "totals": {
             "revenue": totals.get("total_revenue") or 0,
             "vehicles": totals.get("total_vehicles") or 0,
         },
         "by_type": by_type,
+        "by_day": by_day,
+        "by_hour": by_hour,
+        "top_type": top_type,
+        "busiest_day": busiest_day,
+        "busiest_hour": busiest_hour,
+        "avg_revenue_per_vehicle": avg_revenue_per_vehicle,
+        "anomalies": anomalies,
         "detections": detections_qs.order_by("-detected_at")[:300],
         "start": start,
         "end": end,
-        "years": years or [now.year],
         "selected": {
-            "year": request.GET.get("year", str(now.year)),
-            "month": request.GET.get("month", str(now.month)),
-            "day": request.GET.get("day", ""),
             "start_date": request.GET.get("start_date", ""),
             "end_date": request.GET.get("end_date", ""),
-        }
+        },
     }
-
     return render(request, "dashbaord/admin/report.html", context)
-

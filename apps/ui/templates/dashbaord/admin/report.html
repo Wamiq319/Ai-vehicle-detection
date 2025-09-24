@@ -1,86 +1,263 @@
-{% extends "dashbaord/admin/base_admin.html" %}
-{% block content %}
+{% extends "dashbaord/admin/base_admin.html" %} {% block content %}
 
-<div class="max-w-5xl mx-auto">
-  <div class="bg-white rounded-2xl shadow p-6 mb-6">
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-      <h2 class="text-2xl font-bold text-blue-800">Reports</h2>
-      <form method="get" class="flex items-center gap-2">
-        <input type="hidden" name="mode" value="quick" />
-        <label class="text-sm text-gray-600">Quick</label>
-        <select name="period" class="border rounded-lg px-3 py-2">
-          <option value="day" {% if period == 'day' %}selected{% endif %}>Last 24 hours</option>
-          <option value="week" {% if period == 'week' %}selected{% endif %}>Last 7 days</option>
-          <option value="month" {% if period == 'month' %}selected{% endif %}>Last 30 days</option>
-        </select>
-        <button class="px-4 py-2 bg-blue-700 text-white rounded-lg">Apply</button>
-      </form>
-    </div>
+<div class="max-w-7xl mx-auto space-y-10">
+  <!-- Title -->
+  <h2 class="text-3xl font-bold text-gray-800">Reports Dashboard</h2>
 
-    <form method="get" class="grid grid-cols-1 md:grid-cols-5 gap-3 items-end mt-4">
+  <!-- Date Range Filter -->
+  <div class="bg-white rounded-xl shadow p-6 border">
+    <form method="get" class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
       <input type="hidden" name="mode" value="range" />
-      <div class="col-span-1 md:col-span-2">
-        <label class="block text-sm text-gray-600 mb-1">Start date</label>
-        <input type="date" name="start_date" value="{{ selected.start_date }}" class="w-full border rounded-lg px-3 py-2" />
+      <div>
+        <label class="block text-sm font-medium text-gray-600"
+          >Start Date</label
+        >
+        <input
+          type="date"
+          name="start_date"
+          value="{{ selected.start_date }}"
+          class="w-full border rounded-lg px-3 py-2 text-center"
+        />
       </div>
-      <div class="col-span-1 md:col-span-2">
-        <label class="block text-sm text-gray-600 mb-1">End date</label>
-        <input type="date" name="end_date" value="{{ selected.end_date }}" class="w-full border rounded-lg px-3 py-2" />
+      <div>
+        <label class="block text-sm font-medium text-gray-600">End Date</label>
+        <input
+          type="date"
+          name="end_date"
+          value="{{ selected.end_date }}"
+          class="w-full border rounded-lg px-3 py-2 text-center"
+        />
       </div>
-
-      <div class="col-span-1 md:col-span-5 flex justify-end">
-        <button class="px-4 py-2 bg-green-600 text-white rounded-lg">Apply Range</button>
+      <div class="flex justify-end">
+        <button
+          class="px-6 py-2 bg-blue-700 text-white rounded-lg font-semibold hover:bg-blue-800 transition"
+        >
+          Apply
+        </button>
       </div>
     </form>
+  </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-      <div class="bg-blue-50 rounded-lg p-6 border border-blue-200 text-center">
-        <div class="text-4xl mb-2">🚗</div>
-        <div class="text-sm text-blue-800">Total Vehicles</div>
-        <div class="text-2xl font-bold">{{ totals.vehicles }}</div>
-      </div>
-      <div class="bg-green-50 rounded-lg p-6 border border-green-200 text-center">
-        <div class="text-4xl mb-2">💰</div>
-        <div class="text-sm text-green-800">Total Revenue (RS)</div>
-        <div class="text-2xl font-bold">{{ totals.revenue }}</div>
-      </div>
-      <div class="bg-purple-50 rounded-lg p-6 border border-purple-200 text-center">
-        <div class="text-4xl mb-2">📅</div>
-        <div class="text-sm text-purple-800">Period</div>
-        <div class="text-lg font-semibold capitalize">{{ period }}</div>
+  <!-- KPIs -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+    <div
+      class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-lg shadow text-center"
+    >
+      <div class="text-5xl">🚗</div>
+      <div class="text-sm opacity-80">Total Vehicles</div>
+      <div class="text-3xl font-bold">{{ totals.vehicles }}</div>
+    </div>
+    <div
+      class="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-lg shadow text-center"
+    >
+      <div class="text-5xl">💰</div>
+      <div class="text-sm opacity-80">Total Revenue</div>
+      <div class="text-3xl font-bold">{{ totals.revenue }}</div>
+    </div>
+    <div
+      class="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-6 rounded-lg shadow text-center"
+    >
+      <div class="text-5xl">📊</div>
+      <div class="text-sm opacity-80">Avg Revenue/Vehicle</div>
+      <div class="text-3xl font-bold">{{ avg_revenue_per_vehicle }}</div>
+    </div>
+    <div
+      class="bg-gradient-to-r from-pink-500 to-pink-600 text-white p-6 rounded-lg shadow text-center"
+    >
+      <div class="text-5xl">🏆</div>
+      <div class="text-sm opacity-80">Top Type</div>
+      <div class="text-xl font-bold capitalize">
+        {% if top_type %} {{ top_type.vehicle_type }} {% else %} N/A {% endif %}
       </div>
     </div>
+  </div>
 
-    <div class="bg-white rounded-2xl shadow p-6 mb-6 border">
-      <h3 class="text-lg font-bold text-gray-800 mb-4">Breakdown by Vehicle Type</h3>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+  <!-- Advanced Insights -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div class="bg-white rounded-xl shadow p-6 border">
+      <h3 class="font-bold text-lg mb-2">🚦 Busiest Day</h3>
+      {% if busiest_day %}
+      <p class="text-gray-800 text-lg font-semibold">
+        {{ busiest_day.day }} → {{ busiest_day.vehicles }} vehicles
+      </p>
+      {% else %}
+      <p class="text-gray-500">No data</p>
+      {% endif %}
+    </div>
+    <div class="bg-white rounded-xl shadow p-6 border">
+      <h3 class="font-bold text-lg mb-2">⏰ Busiest Hour</h3>
+      {% if busiest_hour %}
+      <p class="text-gray-800 text-lg font-semibold">
+        {{ busiest_hour.hour|date:"H:i" }} → {{ busiest_hour.vehicles }}
+        vehicles
+      </p>
+      {% else %}
+      <p class="text-gray-500">No data</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Breakdown by Vehicle Type -->
+  <div class="bg-white rounded-xl shadow p-6 border">
+    <h3 class="font-bold text-lg mb-4">Breakdown by Vehicle Type</h3>
+    <table class="w-full text-sm border border-gray-300">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="p-2 text-center border border-gray-300">Type</th>
+          <th class="p-2 text-center border border-gray-300">Vehicles</th>
+          <th class="p-2 text-center border border-gray-300">Revenue (RS)</th>
+        </tr>
+      </thead>
+      <tbody>
         {% for row in by_type %}
-          <div class="rounded-lg p-4 border">
-            <div class="text-sm text-gray-600">{{ row.vehicle_type|capfirst }}</div>
-            <div class="text-xl font-bold">{{ row.count }} vehicles</div>
-            <div class="text-sm text-gray-700">Revenue: RS {{ row.revenue }}</div>
-          </div>
+        <tr class="{% cycle 'bg-white' 'bg-gray-50' %}">
+          <td class="p-2 text-center border border-gray-300 capitalize">
+            {{ row.vehicle_type }}
+          </td>
+          <td class="p-2 text-center border border-gray-300">
+            {{ row.count }}
+          </td>
+          <td class="p-2 text-center border border-gray-300">
+            {{ row.revenue }}
+          </td>
+        </tr>
         {% empty %}
-          <p class="text-gray-500">No data for this period.</p>
+        <tr>
+          <td colspan="3" class="p-2 text-center text-gray-500">No data</td>
+        </tr>
         {% endfor %}
-      </div>
-    </div>
+      </tbody>
+    </table>
+  </div>
 
-    <div class="bg-white rounded-2xl shadow p-6 border">
-      <h3 class="text-lg font-bold text-gray-800 mb-4">Recent Detections</h3>
-      <div class="divide-y">
-        {% for d in detections %}
-          <div class="py-3 flex items-center justify-between">
-            <span class="capitalize">{{ d.vehicle_type }}</span>
-            <span class="text-gray-700">RS {{ d.toll_rate }}</span>
-            <span class="text-gray-500 text-sm">{{ d.detected_at }}</span>
-          </div>
+  <!-- Daily Trend -->
+  <div class="bg-white rounded-xl shadow p-6 border">
+    <h3 class="font-bold text-lg mb-4">Daily Traffic & Revenue</h3>
+    <table class="w-full text-sm border border-gray-300">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="p-2 text-center border border-gray-300">Date</th>
+          <th class="p-2 text-center border border-gray-300">Vehicles</th>
+          <th class="p-2 text-center border border-gray-300">Revenue (RS)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for d in by_day %}
+        <tr class="{% cycle 'bg-white' 'bg-gray-50' %}">
+          <td class="p-2 text-center border border-gray-300">{{ d.day }}</td>
+          <td class="p-2 text-center border border-gray-300">
+            {{ d.vehicles }}
+          </td>
+          <td class="p-2 text-center border border-gray-300">
+            {{ d.revenue }}
+          </td>
+        </tr>
         {% empty %}
-          <p class="text-gray-500">No detections yet.</p>
+        <tr>
+          <td colspan="3" class="p-2 text-center text-gray-500">No data</td>
+        </tr>
         {% endfor %}
-      </div>
-    </div>
-</div>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Hourly Trend -->
+  <div class="bg-white rounded-xl shadow p-6 border">
+    <h3 class="font-bold text-lg mb-4">Hourly Traffic</h3>
+    <table class="w-full text-sm border border-gray-300">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="p-2 text-center border border-gray-300">Hour</th>
+          <th class="p-2 text-center border border-gray-300">Vehicles</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for h in by_hour %}
+        <tr class="{% cycle 'bg-white' 'bg-gray-50' %}">
+          <td class="p-2 text-center border border-gray-300">
+            {{ h.hour|date:"H:i" }}
+          </td>
+          <td class="p-2 text-center border border-gray-300">
+            {{ h.vehicles }}
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="2" class="p-2 text-center text-gray-500">No data</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Anomalies -->
+  <div class="bg-red-50 rounded-xl shadow p-6 border">
+    <h3 class="font-bold text-red-700 text-lg mb-4">
+      ⚠️ Anomalies (Possible Fraud)
+    </h3>
+    {% if anomalies %}
+    <table class="w-full text-sm border border-gray-300">
+      <thead class="bg-red-100">
+        <tr>
+          <th class="p-2 text-center border border-gray-300">Type</th>
+          <th class="p-2 text-center border border-gray-300">Toll Rate</th>
+          <th class="p-2 text-center border border-gray-300">Detected At</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for a in anomalies %}
+        <tr class="{% cycle 'bg-white' 'bg-gray-50' %}">
+          <td class="p-2 text-center border border-gray-300 capitalize">
+            {{ a.vehicle_type }}
+          </td>
+          <td class="p-2 text-center border border-gray-300">
+            {{ a.toll_rate }}
+          </td>
+          <td class="p-2 text-center border border-gray-300">
+            {{ a.detected_at }}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="text-gray-600">No anomalies detected.</p>
+    {% endif %}
+  </div>
+
+  <!-- Recent Detections -->
+  <div class="bg-white rounded-xl shadow p-6 border">
+    <h3 class="font-bold text-lg mb-4">Recent Detections</h3>
+    <table class="w-full text-sm border border-gray-300">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="p-2 text-center border border-gray-300">Type</th>
+          <th class="p-2 text-center border border-gray-300">Toll Rate</th>
+          <th class="p-2 text-center border border-gray-300">Detected At</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for d in detections %}
+        <tr class="{% cycle 'bg-white' 'bg-gray-50' %}">
+          <td class="p-2 text-center border border-gray-300 capitalize">
+            {{ d.vehicle_type }}
+          </td>
+          <td class="p-2 text-center border border-gray-300">
+            RS {{ d.toll_rate }}
+          </td>
+          <td class="p-2 text-center border border-gray-300">
+            {{ d.detected_at }}
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="3" class="p-2 text-center text-gray-500">
+            No detections
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </div>
 {% endblock %}
-

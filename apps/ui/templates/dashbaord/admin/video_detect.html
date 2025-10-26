@@ -116,11 +116,11 @@
       This option will allow you to connect a CCTV or live camera stream for
       real-time vehicle detection.
     </p>
+    <video id="live-stream" class="mt-4 w-full rounded-lg border hidden" autoplay playsinline></video>
     <button
       type="button"
-      class="px-6 py-3 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition"
-      disabled
-      title="Coming soon"
+      id="connect-stream-btn"
+      class="px-6 py-3 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition mt-4"
     >
       🔗 Connect Now
     </button>
@@ -141,6 +141,32 @@
         } else {
           preview.src = "";
           preview.classList.add("hidden");
+        }
+      });
+    }
+
+    const connectBtn = document.getElementById("connect-stream-btn");
+    const liveStream = document.getElementById("live-stream");
+    let stream;
+
+    if (connectBtn && liveStream) {
+      connectBtn.addEventListener("click", async () => {
+        if (stream) {
+          stream.getTracks().forEach(track => track.stop());
+          liveStream.srcObject = null;
+          liveStream.classList.add("hidden");
+          stream = null;
+          connectBtn.textContent = '🔗 Connect Now';
+        } else {
+          try {
+            stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            liveStream.srcObject = stream;
+            liveStream.classList.remove("hidden");
+            connectBtn.textContent = '🛑 Disconnect';
+          } catch (err) {
+            console.error("Error accessing webcam: ", err);
+            alert("Could not access the webcam. Please ensure you have a webcam and have granted permission.");
+          }
         }
       });
     }

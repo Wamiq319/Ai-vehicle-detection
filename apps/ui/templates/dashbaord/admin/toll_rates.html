@@ -28,38 +28,26 @@
 
   <!-- Rates Display Section -->
   <div id="rates-display" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-    <!-- Truck -->
+    {% for vehicle, rate in rates.items %}
     <div
       class="bg-blue-50 rounded-lg p-6 border border-blue-200 flex flex-col items-center"
     >
-      <span class="text-5xl mb-2">🚛</span>
-      <h3 class="text-lg font-bold text-blue-800 mb-2">Truck</h3>
+      <span class="text-5xl mb-2">
+        {% if vehicle == 'car' %}🚗
+        {% elif vehicle == 'truck' %}🚛
+        {% elif vehicle == 'bus' %}🚌
+        {% elif vehicle == 'van' %}🚐
+        {% elif vehicle == 'motorbike' %}🏍️
+        {% elif vehicle == 'threewheel' %}🛺
+        {% else %}❓
+        {% endif %}
+      </span>
+      <h3 class="text-lg font-bold text-blue-800 mb-2">{{ vehicle|title }}</h3>
       <p class="text-2xl font-bold text-gray-900 rate-display">
-        <span class="text-lg font-semibold">RS</span>{{ rates.truck }}
+        <span class="text-lg font-semibold">RS</span>{{ rate }}
       </p>
     </div>
-
-    <!-- Car -->
-    <div
-      class="bg-blue-50 rounded-lg p-6 border border-blue-200 flex flex-col items-center"
-    >
-      <span class="text-5xl mb-2">🚗</span>
-      <h3 class="text-lg font-bold text-blue-800 mb-2">Car</h3>
-      <p class="text-2xl font-bold text-gray-900 rate-display">
-        <span class="text-lg font-semibold">RS</span>{{ rates.car }}
-      </p>
-    </div>
-
-    <!-- Bolan -->
-    <div
-      class="bg-blue-50 rounded-lg p-6 border border-blue-200 flex flex-col items-center"
-    >
-      <span class="text-5xl mb-2">🚐</span>
-      <h3 class="text-lg font-bold text-blue-800 mb-2">Bolan</h3>
-      <p class="text-2xl font-bold text-gray-900 rate-display">
-        <span class="text-lg font-semibold">RS</span>{{ rates.bolan }}
-      </p>
-    </div>
+    {% endfor %}
   </div>
 
   <!-- Hidden Form for Editing -->
@@ -71,47 +59,29 @@
   >
     {% csrf_token %}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-      <!-- Truck -->
+      {% for vehicle, rate in rates.items %}
       <div
         class="bg-blue-50 rounded-lg p-6 border border-blue-200 flex flex-col items-center"
       >
-        <span class="text-5xl mb-2">🚛</span>
-        <h3 class="text-lg font-bold text-blue-800 mb-2">Truck</h3>
+        <span class="text-5xl mb-2">
+            {% if vehicle == 'car' %}🚗
+            {% elif vehicle == 'truck' %}🚛
+            {% elif vehicle == 'bus' %}🚌
+            {% elif vehicle == 'van' %}🚐
+            {% elif vehicle == 'motorbike' %}🏍️
+            {% elif vehicle == 'threewheel' %}🛺
+            {% else %}❓
+            {% endif %}
+        </span>
+        <h3 class="text-lg font-bold text-blue-800 mb-2">{{ vehicle|title }}</h3>
         <input
           type="number"
-          name="truck_rate"
-          value="{{ rates.truck }}"
+          name="{{ vehicle }}_rate"
+          value="{{ rate }}"
           class="text-center text-2xl font-bold text-gray-900 border rounded-xl p-2 w-32 editable-input"
         />
       </div>
-
-      <!-- Car -->
-      <div
-        class="bg-blue-50 rounded-lg p-6 border border-blue-200 flex flex-col items-center"
-      >
-        <span class="text-5xl mb-2">🚗</span>
-        <h3 class="text-lg font-bold text-blue-800 mb-2">Car</h3>
-        <input
-          type="number"
-          name="car_rate"
-          value="{{ rates.car }}"
-          class="text-center text-2xl font-bold text-gray-900 border rounded-xl p-2 w-32 editable-input"
-        />
-      </div>
-
-      <!-- Bolan -->
-      <div
-        class="bg-blue-50 rounded-lg p-6 border border-blue-200 flex flex-col items-center"
-      >
-        <span class="text-5xl mb-2">🚐</span>
-        <h3 class="text-lg font-bold text-blue-800 mb-2">Bolan</h3>
-        <input
-          type="number"
-          name="bolan_rate"
-          value="{{ rates.bolan }}"
-          class="text-center text-2xl font-bold text-gray-900 border rounded-xl p-2 w-32 editable-input"
-        />
-      </div>
+      {% endfor %}
     </div>
 
     <!-- Save/Cancel Buttons -->

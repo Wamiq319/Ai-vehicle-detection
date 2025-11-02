@@ -80,11 +80,27 @@ def reports(request):
         total_vehicles=Count("id")
     )
 
-    by_type = list(
+    all_vehicle_types = [v[0] for v in Detection.VEHICLE_CHOICES]
+
+    # Initialize by_type with all vehicle types
+    by_type_dict = {
+        vt: {'vehicle_type': vt, 'count': 0, 'revenue': 0}
+        for vt in all_vehicle_types
+    }
+
+    # Get data from the database
+    by_type_qs = (
         detections_qs.values("vehicle_type")
         .annotate(count=Count("id"), revenue=Sum("toll_rate"))
-        .order_by("vehicle_type")
     )
+
+    # Update the dictionary with actual data
+    for row in by_type_qs:
+        if row['vehicle_type'] in by_type_dict:
+            by_type_dict[row['vehicle_type']] = row
+
+    # Convert the dictionary to a list and sort it
+    by_type = sorted(list(by_type_dict.values()), key=lambda x: x['vehicle_type'])
 
     by_day = list(
         detections_qs.annotate(day=TruncDate("detected_at"))

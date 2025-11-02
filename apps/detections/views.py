@@ -23,9 +23,8 @@ def upload_video(request):
     # Build simple rates context for the UI
     rates_qs = TollRate.objects.all()
     rates = {
-        "truck": next((r.rate for r in rates_qs if r.vehicle_type == "truck"), 0),
-        "car": next((r.rate for r in rates_qs if r.vehicle_type == "car"), 0),
-        "bolan": next((r.rate for r in rates_qs if r.vehicle_type == "bolan"), 0),
+        vt[0]: next((r.rate for r in rates_qs if r.vehicle_type == vt[0]), 0)
+        for vt in Detection.VEHICLE_CHOICES
     }
 
     return render(request, "dashbaord/admin/video_detect.html", {"rates": rates})
@@ -37,10 +36,21 @@ def save_detection(request):
     Example payload: { "vehicle_type": "car" }
     """
     if request.method == "POST":
-        vehicle_type = request.POST.get("vehicle_type")
+        vehicle_type_raw = request.POST.get("vehicle_type", "").lower().strip()
 
-        if vehicle_type not in ["truck", "car", "bolan"]:
-            return JsonResponse({"error": "Invalid vehicle type"}, status=400)
+        VEHICLE_MAP = {
+            'car': 'car', 'cars': 'car',
+            'threewheel': 'threewheel', 'threewheels': 'threewheel',
+            'bus': 'bus', 'buses': 'bus',
+            'truck': 'truck', 'trucks': 'truck',
+            'motorbike': 'motorbike', 'motorbikes': 'motorbike',
+            'van': 'van', 'vans': 'van',
+        }
+        
+        vehicle_type = VEHICLE_MAP.get(vehicle_type_raw)
+
+        if not vehicle_type:
+            return JsonResponse({"error": f"Invalid vehicle type: {vehicle_type_raw}"}, status=400)
 
         try:
             toll_rate = TollRate.objects.get(vehicle_type=vehicle_type).rate

@@ -22,7 +22,7 @@ def process_video_and_create_detections(video_file):
             destination.write(chunk)
 
     # Load the trained model
-    model_path = os.path.join(settings.BASE_DIR, "apps", "ai", "Model.pt")
+    model_path = os.path.join(settings.BASE_DIR, "apps", "detections/services", "Model.pt")
     model = YOLO(model_path)
 
     charged_ids = set()

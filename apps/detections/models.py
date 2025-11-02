@@ -5,9 +5,12 @@ from apps.tolls.models import TollRate
 
 class Detection(models.Model):
     VEHICLE_CHOICES = (
-        ('truck', 'Truck'),
         ('car', 'Car'),
-        ('bolan', 'Bolan'),
+        ('threewheel', 'Threewheel'),
+        ('bus', 'Bus'),
+        ('truck', 'Truck'),
+        ('motorbike', 'Motorbike'),
+        ('van', 'Van'),
     )
 
     vehicle_type = models.CharField(max_length=10, choices=VEHICLE_CHOICES)

@@ -9,67 +9,61 @@
     <form method="get" class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
       <input type="hidden" name="mode" value="range" />
       <div>
-        <label class="block text-sm font-medium text-gray-600"
-          >Start Date</label
-        >
-        <input
-          type="date"
-          name="start_date"
-          value="{{ selected.start_date }}"
-          class="w-full border rounded-lg px-3 py-2 text-center"
-        />
+        <label class="block text-sm font-medium text-gray-600">Start Date</label>
+        <input type="date" name="start_date" value="{{ selected.start_date }}" class="w-full border rounded-lg px-3 py-2 text-center" />
       </div>
       <div>
         <label class="block text-sm font-medium text-gray-600">End Date</label>
-        <input
-          type="date"
-          name="end_date"
-          value="{{ selected.end_date }}"
-          class="w-full border rounded-lg px-3 py-2 text-center"
-        />
+        <input type="date" name="end_date" value="{{ selected.end_date }}" class="w-full border rounded-lg px-3 py-2 text-center" />
       </div>
       <div class="flex justify-end">
-        <button
-          class="px-6 py-2 bg-blue-700 text-white rounded-lg font-semibold hover:bg-blue-800 transition"
-        >
-          Apply
-        </button>
+        <button class="px-6 py-2 bg-blue-700 text-white rounded-lg font-semibold hover:bg-blue-800 transition">Apply</button>
       </div>
     </form>
   </div>
 
   <!-- KPIs -->
   <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-    <div
-      class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-lg shadow text-center"
-    >
+    <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-lg shadow text-center">
       <div class="text-5xl">🚗</div>
       <div class="text-sm opacity-80">Total Vehicles</div>
       <div class="text-3xl font-bold">{{ totals.vehicles }}</div>
     </div>
-    <div
-      class="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-lg shadow text-center"
-    >
+    <div class="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-lg shadow text-center">
       <div class="text-5xl">💰</div>
       <div class="text-sm opacity-80">Total Revenue</div>
       <div class="text-3xl font-bold">{{ totals.revenue }}</div>
     </div>
-    <div
-      class="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-6 rounded-lg shadow text-center"
-    >
+    <div class="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-6 rounded-lg shadow text-center">
       <div class="text-5xl">📊</div>
       <div class="text-sm opacity-80">Avg Revenue/Vehicle</div>
       <div class="text-3xl font-bold">{{ avg_revenue_per_vehicle }}</div>
     </div>
-    <div
-      class="bg-gradient-to-r from-pink-500 to-pink-600 text-white p-6 rounded-lg shadow text-center"
-    >
+    <div class="bg-gradient-to-r from-pink-500 to-pink-600 text-white p-6 rounded-lg shadow text-center">
       <div class="text-5xl">🏆</div>
       <div class="text-sm opacity-80">Top Type</div>
-      <div class="text-xl font-bold capitalize">
-        {% if top_type %} {{ top_type.vehicle_type }} {% else %} N/A {% endif %}
-      </div>
+      <div class="text-xl font-bold capitalize">{% if top_type %} {{ top_type.vehicle_type }} {% else %} N/A {% endif %}</div>
     </div>
+  </div>
+
+  <!-- Vehicle Type KPIs -->
+  <div class="grid grid-cols-2 md:grid-cols-6 gap-4">
+    {% for row in by_type %}
+    <div class="bg-white text-gray-800 p-4 rounded-lg shadow text-center border">
+        <div class="text-3xl">
+            {% if row.vehicle_type == 'car' %}🚗
+            {% elif row.vehicle_type == 'truck' %}🚛
+            {% elif row.vehicle_type == 'bus' %}🚌
+            {% elif row.vehicle_type == 'van' %}🚐
+            {% elif row.vehicle_type == 'motorbike' %}🏍️
+            {% elif row.vehicle_type == 'threewheel' %}🛺
+            {% else %}❓
+            {% endif %}
+        </div>
+        <div class="text-sm capitalize mt-2">{{ row.vehicle_type }}</div>
+        <div class="text-2xl font-bold">{{ row.count }}</div>
+    </div>
+    {% endfor %}
   </div>
 
   <!-- Advanced Insights -->
@@ -77,9 +71,7 @@
     <div class="bg-white rounded-xl shadow p-6 border">
       <h3 class="font-bold text-lg mb-2">🚦 Busiest Day</h3>
       {% if busiest_day %}
-      <p class="text-gray-800 text-lg font-semibold">
-        {{ busiest_day.day }} → {{ busiest_day.vehicles }} vehicles
-      </p>
+      <p class="text-gray-800 text-lg font-semibold">{{ busiest_day.day }} → {{ busiest_day.vehicles }} vehicles</p>
       {% else %}
       <p class="text-gray-500">No data</p>
       {% endif %}
@@ -87,177 +79,184 @@
     <div class="bg-white rounded-xl shadow p-6 border">
       <h3 class="font-bold text-lg mb-2">⏰ Busiest Hour</h3>
       {% if busiest_hour %}
-      <p class="text-gray-800 text-lg font-semibold">
-        {{ busiest_hour.hour|date:"H:i" }} → {{ busiest_hour.vehicles }}
-        vehicles
-      </p>
+      <p class="text-gray-800 text-lg font-semibold">{{ busiest_hour.hour|date:"H:i" }} → {{ busiest_hour.vehicles }} vehicles</p>
       {% else %}
       <p class="text-gray-500">No data</p>
       {% endif %}
     </div>
   </div>
 
-  <!-- Breakdown by Vehicle Type -->
-  <div class="bg-white rounded-xl shadow p-6 border">
-    <h3 class="font-bold text-lg mb-4">Breakdown by Vehicle Type</h3>
-    <table class="w-full text-sm border border-gray-300">
-      <thead class="bg-gray-100">
-        <tr>
-          <th class="p-2 text-center border border-gray-300">Type</th>
-          <th class="p-2 text-center border border-gray-300">Vehicles</th>
-          <th class="p-2 text-center border border-gray-300">Revenue (RS)</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for row in by_type %}
-        <tr class="{% cycle 'bg-white' 'bg-gray-50' %}">
-          <td class="p-2 text-center border border-gray-300 capitalize">
-            {{ row.vehicle_type }}
-          </td>
-          <td class="p-2 text-center border border-gray-300">
-            {{ row.count }}
-          </td>
-          <td class="p-2 text-center border border-gray-300">
-            {{ row.revenue }}
-          </td>
-        </tr>
-        {% empty %}
-        <tr>
-          <td colspan="3" class="p-2 text-center text-gray-500">No data</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+  <!-- Breakdown and Hourly Traffic -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div class="bg-white rounded-xl shadow p-6 border flex flex-col">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="font-bold text-lg">Breakdown by Vehicle Type</h3>
+        <span id="breakdown-table-count" class="text-sm font-semibold text-gray-600"></span>
+      </div>
+      <div class="flex-grow overflow-y-auto" style="max-height: 300px;">
+        <table id="breakdown-table" class="w-full text-sm border border-gray-300">
+          <thead class="bg-gray-100 sticky top-0"><tr><th class="p-2 text-center border">Type</th><th class="p-2 text-center border">Vehicles</th><th class="p-2 text-center border">Revenue (RS)</th></tr></thead>
+          <tbody>
+            {% for row in by_type %}
+            <tr class="{% cycle 'bg-white' 'bg-gray-50' %}"><td class="p-2 text-center border capitalize">{{ row.vehicle_type }}</td><td class="p-2 text-center border">{{ row.count }}</td><td class="p-2 text-center border">{{ row.revenue }}</td></tr>
+            {% empty %}
+            <tr><td colspan="3" class="p-2 text-center text-gray-500">No data</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="bg-white rounded-xl shadow p-6 border flex flex-col">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="font-bold text-lg">Hourly Traffic</h3>
+        <span id="hourly-traffic-table-count" class="text-sm font-semibold text-gray-600"></span>
+      </div>
+      <div class="flex-grow overflow-y-auto" style="max-height: 300px;">
+        <table id="hourly-traffic-table" class="w-full text-sm border border-gray-300">
+          <thead class="bg-gray-100 sticky top-0"><tr><th class="p-2 text-center border">Hour</th><th class="p-2 text-center border">Vehicles</th></tr></thead>
+          <tbody>
+            {% for h in by_hour %}
+            <tr class="{% cycle 'bg-white' 'bg-gray-50' %}"><td class="p-2 text-center border">{{ h.hour|date:"H:i" }}</td><td class="p-2 text-center border">{{ h.vehicles }}</td></tr>
+            {% empty %}
+            <tr><td colspan="2" class="p-2 text-center text-gray-500">No data</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div id="pagination-hourly-traffic" class="flex justify-center mt-4"></div>
+    </div>
   </div>
 
   <!-- Daily Trend -->
   <div class="bg-white rounded-xl shadow p-6 border">
-    <h3 class="font-bold text-lg mb-4">Daily Traffic & Revenue</h3>
-    <table class="w-full text-sm border border-gray-300">
-      <thead class="bg-gray-100">
-        <tr>
-          <th class="p-2 text-center border border-gray-300">Date</th>
-          <th class="p-2 text-center border border-gray-300">Vehicles</th>
-          <th class="p-2 text-center border border-gray-300">Revenue (RS)</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for d in by_day %}
-        <tr class="{% cycle 'bg-white' 'bg-gray-50' %}">
-          <td class="p-2 text-center border border-gray-300">{{ d.day }}</td>
-          <td class="p-2 text-center border border-gray-300">
-            {{ d.vehicles }}
-          </td>
-          <td class="p-2 text-center border border-gray-300">
-            {{ d.revenue }}
-          </td>
-        </tr>
-        {% empty %}
-        <tr>
-          <td colspan="3" class="p-2 text-center text-gray-500">No data</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="font-bold text-lg">Daily Traffic & Revenue</h3>
+      <span id="daily-traffic-table-count" class="text-sm font-semibold text-gray-600"></span>
+    </div>
+    <div class="overflow-y-auto" style="max-height: 400px;">
+        <table id="daily-traffic-table" class="w-full text-sm border border-gray-300">
+            <thead class="bg-gray-100 sticky top-0"><tr><th class="p-2 text-center border">Date</th><th class="p-2 text-center border">Vehicles</th><th class="p-2 text-center border">Revenue (RS)</th></tr></thead>
+            <tbody>
+                {% for d in by_day %}
+                <tr class="{% cycle 'bg-white' 'bg-gray-50' %}"><td class="p-2 text-center border">{{ d.day }}</td><td class="p-2 text-center border">{{ d.vehicles }}</td><td class="p-2 text-center border">{{ d.revenue }}</td></tr>
+                {% empty %}
+                <tr><td colspan="3" class="p-2 text-center text-gray-500">No data</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div id="pagination-daily-traffic" class="flex justify-center mt-4"></div>
   </div>
 
-  <!-- Hourly Trend -->
-  <div class="bg-white rounded-xl shadow p-6 border">
-    <h3 class="font-bold text-lg mb-4">Hourly Traffic</h3>
-    <table class="w-full text-sm border border-gray-300">
-      <thead class="bg-gray-100">
-        <tr>
-          <th class="p-2 text-center border border-gray-300">Hour</th>
-          <th class="p-2 text-center border border-gray-300">Vehicles</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for h in by_hour %}
-        <tr class="{% cycle 'bg-white' 'bg-gray-50' %}">
-          <td class="p-2 text-center border border-gray-300">
-            {{ h.hour|date:"H:i" }}
-          </td>
-          <td class="p-2 text-center border border-gray-300">
-            {{ h.vehicles }}
-          </td>
-        </tr>
-        {% empty %}
-        <tr>
-          <td colspan="2" class="p-2 text-center text-gray-500">No data</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-
-  <!-- Anomalies -->
+  {% if anomalies %}
   <div class="bg-red-50 rounded-xl shadow p-6 border">
-    <h3 class="font-bold text-red-700 text-lg mb-4">
-      ⚠️ Anomalies (Possible Fraud)
-    </h3>
-    {% if anomalies %}
-    <table class="w-full text-sm border border-gray-300">
-      <thead class="bg-red-100">
-        <tr>
-          <th class="p-2 text-center border border-gray-300">Type</th>
-          <th class="p-2 text-center border border-gray-300">Toll Rate</th>
-          <th class="p-2 text-center border border-gray-300">Detected At</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for a in anomalies %}
-        <tr class="{% cycle 'bg-white' 'bg-gray-50' %}">
-          <td class="p-2 text-center border border-gray-300 capitalize">
-            {{ a.vehicle_type }}
-          </td>
-          <td class="p-2 text-center border border-gray-300">
-            {{ a.toll_rate }}
-          </td>
-          <td class="p-2 text-center border border-gray-300">
-            {{ a.detected_at }}
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    {% else %}
-    <p class="text-gray-600">No anomalies detected.</p>
-    {% endif %}
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="font-bold text-red-700 text-lg">⚠️ Anomalies (Possible Fraud)</h3>
+      <span id="anomalies-table-count" class="text-sm font-semibold text-gray-600"></span>
+    </div>
+    <div class="overflow-y-auto" style="max-height: 400px;">
+        <table id="anomalies-table" class="w-full text-sm border border-gray-300">
+            <thead class="bg-red-100 sticky top-0"><tr><th class="p-2 text-center border">Type</th><th class="p-2 text-center border">Toll Rate</th><th class="p-2 text-center border">Detected At</th></tr></thead>
+            <tbody>
+                {% for a in anomalies %}
+                <tr class="{% cycle 'bg-white' 'bg-gray-50' %}"><td class="p-2 text-center border capitalize">{{ a.vehicle_type }}</td><td class="p-2 text-center border">{{ a.toll_rate }}</td><td class="p-2 text-center border">{{ a.detected_at }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div id="pagination-anomalies" class="flex justify-center mt-4"></div>
   </div>
+  {% endif %}
 
-  <!-- Recent Detections -->
+  <!-- Detections -->
   <div class="bg-white rounded-xl shadow p-6 border">
-    <h3 class="font-bold text-lg mb-4">Recent Detections</h3>
-    <table class="w-full text-sm border border-gray-300">
-      <thead class="bg-gray-100">
-        <tr>
-          <th class="p-2 text-center border border-gray-300">Type</th>
-          <th class="p-2 text-center border border-gray-300">Toll Rate</th>
-          <th class="p-2 text-center border border-gray-300">Detected At</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for d in detections %}
-        <tr class="{% cycle 'bg-white' 'bg-gray-50' %}">
-          <td class="p-2 text-center border border-gray-300 capitalize">
-            {{ d.vehicle_type }}
-          </td>
-          <td class="p-2 text-center border border-gray-300">
-            RS {{ d.toll_rate }}
-          </td>
-          <td class="p-2 text-center border border-gray-300">
-            {{ d.detected_at }}
-          </td>
-        </tr>
-        {% empty %}
-        <tr>
-          <td colspan="3" class="p-2 text-center text-gray-500">
-            No detections
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="font-bold text-lg">Detections</h3>
+      <span id="recent-detections-table-count" class="text-sm font-semibold text-gray-600"></span>
+    </div>
+    <div class="overflow-y-auto" style="max-height: 400px;">
+        <table id="recent-detections-table" class="w-full text-sm border border-gray-300">
+            <thead class="bg-gray-100 sticky top-0"><tr><th class="p-2 text-center border">Type</th><th class="p-2 text-center border">Toll Rate</th><th class="p-2 text-center border">Detected At</th></tr></thead>
+            <tbody>
+                {% for d in detections %}
+                <tr class="{% cycle 'bg-white' 'bg-gray-50' %}"><td class="p-2 text-center border capitalize">{{ d.vehicle_type }}</td><td class="p-2 text-center border">RS {{ d.toll_rate }}</td><td class="p-2 text-center border">{{ d.detected_at }}</td></tr>
+                {% empty %}
+                <tr><td colspan="3" class="p-2 text-center text-gray-500">No detections</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div id="pagination-recent-detections" class="flex justify-center mt-4"></div>
   </div>
 </div>
+
+<script>
+  function setupPagination(tableId, paginationId, rowsPerPage) {
+    const table = document.getElementById(tableId);
+    if (!table) return;
+
+    const rows = table.querySelectorAll('tbody tr');
+    const numRows = rows.length;
+    const countContainer = document.getElementById(`${tableId}-count`);
+    if (countContainer) {
+        countContainer.textContent = `Total Records: ${numRows}`;
+    }
+
+    if (numRows === 0) return;
+
+    const numPages = Math.ceil(numRows / rowsPerPage);
+    const paginationContainer = document.getElementById(paginationId);
+
+    if (numPages <= 1) {
+        if (paginationContainer) paginationContainer.style.display = 'none';
+        return;
+    }
+
+    let currentPage = 1;
+
+    function displayPage(page) {
+        currentPage = page;
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+
+        rows.forEach((row, index) => {
+            row.style.display = (index >= start && index < end) ? '' : 'none';
+        });
+
+        renderPaginationButtons();
+    }
+
+    function renderPaginationButtons() {
+        if (!paginationContainer) return;
+        paginationContainer.innerHTML = '';
+
+        const prevButton = document.createElement('button');
+        prevButton.textContent = 'Previous';
+        prevButton.disabled = currentPage === 1;
+        prevButton.className = 'px-4 py-2 mx-1 rounded-lg bg-gray-200 hover:bg-gray-300 disabled:opacity-50';
+        prevButton.addEventListener('click', () => displayPage(currentPage - 1));
+        paginationContainer.appendChild(prevButton);
+
+        const nextButton = document.createElement('button');
+        nextButton.textContent = 'Next';
+        nextButton.disabled = currentPage === numPages;
+        nextButton.className = 'px-4 py-2 mx-1 rounded-lg bg-gray-200 hover:bg-gray-300 disabled:opacity-50';
+        nextButton.addEventListener('click', () => displayPage(currentPage + 1));
+        paginationContainer.appendChild(nextButton);
+    }
+
+    displayPage(1);
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    setupPagination('recent-detections-table', 'pagination-recent-detections', 10);
+    setupPagination('daily-traffic-table', 'pagination-daily-traffic', 5);
+    setupPagination('hourly-traffic-table', 'pagination-hourly-traffic', 6);
+    setupPagination('anomalies-table', 'pagination-anomalies', 10);
+    setupPagination('breakdown-table', 'pagination-breakdown', 10);
+  });
+</script>
+
 {% endblock %}
+
+

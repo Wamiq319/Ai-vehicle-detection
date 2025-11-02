@@ -4,14 +4,12 @@ from .models import TollRate
 
 def toll_rates_view(request):
     # Fetch all rates, create default if not exist
-    vehicle_types = ['truck', 'car', 'bolan']
-    default_rates = {'truck': 150.00, 'car': 50.00, 'bolan': 75.00}
+    vehicle_types = [v[0] for v in TollRate.VEHICLE_CHOICES]
     rates = {}
     
     for v in vehicle_types:
         obj, created = TollRate.objects.get_or_create(
-            vehicle_type=v, 
-            defaults={'rate': default_rates[v]}
+            vehicle_type=v,
         )
         rates[v] = obj.rate
 

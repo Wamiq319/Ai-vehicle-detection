@@ -20,7 +20,7 @@
 </div>
 
 <!-- Key Statistics -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
   <div
     class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow"
   >
@@ -28,7 +28,7 @@
       <div>
         <p class="text-sm font-medium text-gray-600">Total Vehicles</p>
         <p class="text-2xl font-bold text-gray-900">
-          {{ stats.total_vehicles_today }}
+          {{ stats.total_vehicles }}
         </p>
       </div>
       <div
@@ -44,9 +44,9 @@
   >
     <div class="flex items-center justify-between">
       <div>
-        <p class="text-sm font-medium text-gray-600">Revenue Today</p>
+        <p class="text-sm font-medium text-gray-600">Total Revenue</p>
         <p class="text-2xl font-bold text-gray-900">
-          ${{ stats.total_revenue_today|floatformat:0 }}
+          ${{ stats.total_revenue|floatformat:0 }}
         </p>
       </div>
       <div
@@ -62,40 +62,22 @@
   >
     <div class="flex items-center justify-between">
       <div>
-        <p class="text-sm font-medium text-gray-600">Active Points</p>
+        <p class="text-sm font-medium text-gray-600">Toll Rates</p>
         <p class="text-2xl font-bold text-gray-900">
-          {{ stats.active_toll_points }}
+          {{ toll_points.count }}
         </p>
       </div>
       <div
         class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center"
       >
-        <span class="text-2xl">🚦</span>
-      </div>
-    </div>
-  </div>
-
-  <div
-    class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow"
-  >
-    <div class="flex items-center justify-between">
-      <div>
-        <p class="text-sm font-medium text-gray-600">Accuracy</p>
-        <p class="text-2xl font-bold text-gray-900">
-          {{ stats.detection_accuracy }}%
-        </p>
-      </div>
-      <div
-        class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center"
-      >
-        <span class="text-2xl">🎯</span>
+        <span class="text-2xl">💰</span>
       </div>
     </div>
   </div>
 </div>
 
 <!-- Quick Actions -->
-<div class="bg-white rounded-2xl shadow-lg p-6">
+<div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
   <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
     <span>⚡</span> Quick Actions
   </h2>
@@ -167,5 +149,26 @@
     </a>
   </div>
 </div>
+
+<!-- Toll Rates -->
+<div class="bg-white rounded-2xl shadow-lg p-6">
+  <h2 class="text-xl font-bold text-gray-800 mb-6">Toll Rates by Vehicle Type</h2>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for rate in toll_points %}
+    <div class="bg-gray-50 rounded-xl p-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="font-semibold text-gray-800">{{ rate.get_vehicle_type_display }}</p>
+          <p class="text-sm text-gray-600">Toll Rate</p>
+        </div>
+        <p class="text-2xl font-bold text-green-600">{{ rate.rate|floatformat:2 }} RS</p>
+      </div>
+    </div>
+    {% empty %}
+    <p class="text-gray-500">No toll rates have been set up yet.</p>
+    {% endfor %}
+  </div>
+</div>
+
 
 {% endblock %}

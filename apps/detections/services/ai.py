@@ -40,12 +40,13 @@ def process_video_and_create_detections(video_file):
             for box, track_id, cls in zip(result.boxes.xyxy, result.boxes.id, result.boxes.cls):
                 vid = int(track_id)
                 cname = model.names[int(cls)].lower()
+                print(f"Detected vehicle: {cname}")
 
                 if vid not in charged_ids:
                     charged_ids.add(vid)
                     
                     # Map detected class to vehicle type
-                    if cname in ["truck", "car", "bolan"]:
+                    if cname in ["car", "threewheel", "bus", "truck", "motorbike", "van"]:
                         try:
                             toll_rate = TollRate.objects.get(vehicle_type=cname).rate
                         except TollRate.DoesNotExist:

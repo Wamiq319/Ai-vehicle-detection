@@ -1,0 +1,30 @@
+<header class="bg-white shadow-sm px-6 py-4 flex justify-between items-center">
+  <!-- Left side: Toggle and Title -->
+  <div class="flex items-center">
+    <button
+      id="sidebar-toggle"
+      class="text-gray-600 hover:text-gray-800 focus:outline-none lg:hidden"
+    >
+      <i class="fas fa-bars text-xl"></i>
+    </button>
+    <h1 class="text-2xl font-bold text-gray-800 ml-4">
+      {% block page_title %}Dashboard{% endblock %}
+    </h1>
+  </div>
+
+  <!-- Right side: Icons and User -->
+  <div class="flex items-center space-x-6">
+    <div class="flex items-center space-x-3">
+      <div
+        class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center"
+      >
+        <i class="fas fa-user text-white"></i>
+      </div>
+      <div>
+        <p class="font-semibold text-gray-800">
+          {{ user.first_name|default:user.username }}
+        </p>
+      </div>
+    </div>
+  </div>
+</header>

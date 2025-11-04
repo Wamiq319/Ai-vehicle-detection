@@ -237,6 +237,11 @@
         prevButton.addEventListener('click', () => displayPage(currentPage - 1));
         paginationContainer.appendChild(prevButton);
 
+        const pageInfo = document.createElement('span');
+        pageInfo.textContent = `Page ${currentPage} of ${numPages}`;
+        pageInfo.className = 'px-4 py-2 mx-1 text-gray-700';
+        paginationContainer.appendChild(pageInfo);
+
         const nextButton = document.createElement('button');
         nextButton.textContent = 'Next';
         nextButton.disabled = currentPage === numPages;

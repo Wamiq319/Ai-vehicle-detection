@@ -160,7 +160,7 @@ def reports(request):
         "busiest_hour": busiest_hour,
         "avg_revenue_per_vehicle": avg_revenue_per_vehicle,
         "anomalies": anomalies,
-        "detections": detections_qs.order_by("-detected_at")[:300],
+        "detections": detections_qs.order_by("-detected_at"),
         "start": start,
         "end": end,
         "selected": {

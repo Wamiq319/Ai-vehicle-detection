@@ -1,7 +1,6 @@
 # Python
 __pycache__/
 *.py[cod]
-*.sqlite3
 *.log
 
 # Virtual env
@@ -14,7 +13,6 @@ __pycache__/
 *.pyo
 
 # Django
-*.sqlite3
 *.log
 media/
 staticfiles/
@@ -30,7 +28,6 @@ venv/
 node_modules/
 tailwind_build/node_modules/
 tailwind_build/package-lock.json
-apps/ui/static/css/styles.css
 
 # OS files
 .DS_Store
@@ -44,14 +41,12 @@ Thumbs.db
 
 # Django stuff
 *.pyc
-db.sqlite3
 media/
 staticfiles/
 
 # Tailwind / Node / NPM
 node_modules/
 theme/static_src/
-theme/static/css/dist/
 theme/package-lock.json
 
 # OS
